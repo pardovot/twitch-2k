@@ -17,8 +17,8 @@ function assertPackaged(path) {
 describe("manifest.json", () => {
   it("meets Chrome Web Store limits", () => {
     assert.equal(manifest.manifest_version, 3);
-    // Chrome versions are one to four dot-separated integers.
-    assert.match(manifest.version, /^\d+(\.\d+){0,3}$/);
+    // Releases bump a plain major.minor.patch version, see scripts/bump-version.mjs.
+    assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
     assert.ok(manifest.name.length <= MAX_NAME_LENGTH, "name too long");
     assert.ok(manifest.description.length <= MAX_DESCRIPTION_LENGTH, "description too long");
   });

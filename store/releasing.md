@@ -1,8 +1,10 @@
 # Releasing
 
-Bump `version` in `extension/manifest.json` and push to `master`.
+In the Actions tab, open **CI**, click **Run workflow** on `master` and pick `patch`, `minor` or `major`.
 
-The Release workflow runs on every push to `master`. When the manifest version has no `v<version>` tag yet, it runs the tests, creates the tag and a GitHub release with `twitch-2k-v<version>.zip` attached. If the Chrome Web Store is configured it also uploads the zip and submits it for review. Pushes that keep the same version release nothing.
+The run tests the code, bumps the version in `extension/manifest.json`, commits `Release v<version>`, tags it and creates a GitHub release with `twitch-2k-v<version>.zip` attached. The release notes say when the Worker changed so users know to redeploy. If the Chrome Web Store is configured it also uploads the zip and submits it for review.
+
+Pushes never release. When a push to `master` changes `extension/` after the last release, the run shows a warning as a reminder.
 
 ## Chrome Web Store setup
 

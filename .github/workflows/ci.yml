@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version part to bump
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+      - name: Flag unreleased extension changes
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          if last_tag=$(sh scripts/changed-since-release.sh extension); then
+            echo "::warning::extension/ changed since ${last_tag:-the start}. Run the CI workflow from the Actions tab to release it."
+          fi
+
+  release:
+    needs: test
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      zip: ${{ steps.package.outputs.zip }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Note Worker changes
+        run: |
+          if last_tag=$(sh scripts/changed-since-release.sh worker) && [ -n "$last_tag" ]; then
+            echo "The Worker changed since $last_tag. Redeploy yours to get the update." > notes.md
+          else
+            : > notes.md
+          fi
+
+      - name: Bump version and commit
+        id: version
+        run: |
+          version=$(node scripts/bump-version.mjs "${{ inputs.bump }}")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Release v$version"
+          git tag "v$version"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Package
+        id: package
+        run: |
+          zip="twitch-2k-${{ steps.version.outputs.tag }}.zip"
+          npm run package
+          mv twitch-2k.zip "$zip"
+          echo "zip=$zip" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extension
+          path: ${{ steps.package.outputs.zip }}
+
+      - name: Push and create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git push --atomic origin HEAD:master "${{ steps.version.outputs.tag }}"
+          gh release create "${{ steps.version.outputs.tag }}" "${{ steps.package.outputs.zip }}" --generate-notes --notes-file notes.md
+
+  publish:
+    needs: release
+    # Runs only once the Chrome Web Store is configured, see store/releasing.md.
+    if: vars.CWS_EXTENSION_ID != ''
+    runs-on: ubuntu-latest
+    environment: chrome-web-store
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: extension
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+
+      - name: Upload and submit for review
+        env:
+          CWS_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+        run: node scripts/publish-chrome-web-store.mjs "${{ needs.release.outputs.zip }}"

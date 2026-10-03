@@ -1,0 +1,12 @@
+{
+  "name": "twitch-2k",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "package": "git archive --format=zip -o twitch-2k.zip HEAD:extension"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

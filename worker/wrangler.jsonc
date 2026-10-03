@@ -1,0 +1,13 @@
+{
+  "name": "twitch-2k-token",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  // Twitch caps resolution by the IP that requests the playback token. Without a placement hint
+  // the Worker runs in the data center nearest the viewer, which is in the restricted country.
+  "placement": {
+    "region": "aws:eu-central-1"
+  },
+  "observability": {
+    "enabled": false
+  }
+}

@@ -56,7 +56,7 @@ npm test
 
 Tests use Node's built-in test runner (Node 22+) and need no dependencies.
 
-`npm run package` zips the committed `extension` folder into `twitch-2k.zip`. Pushing a `v*` tag builds a GitHub release and can submit to the Chrome Web Store, see [store/releasing.md](store/releasing.md). Listing text and reviewer notes are in [store/listing.md](store/listing.md).
+`npm run package` zips the committed `extension` folder into `twitch-2k.zip`. Bumping the manifest version on `master` creates a GitHub release and can submit to the Chrome Web Store, see [store/releasing.md](store/releasing.md). Listing text and reviewer notes are in [store/listing.md](store/listing.md).
 
 ## Privacy
 

@@ -1,9 +1,8 @@
 # Releasing
 
-1. Bump `version` in `extension/manifest.json` and commit.
-2. Tag and push: `git tag v1.0.1 && git push origin v1.0.1`.
+Bump `version` in `extension/manifest.json` and push to `master`.
 
-The Release workflow runs the tests, checks the tag matches the manifest version, and attaches `twitch-2k-v1.0.1.zip` to a GitHub release. If the Chrome Web Store is configured it also uploads the zip and submits it for review.
+The Release workflow runs on every push to `master`. When the manifest version has no `v<version>` tag yet, it runs the tests, creates the tag and a GitHub release with `twitch-2k-v<version>.zip` attached. If the Chrome Web Store is configured it also uploads the zip and submits it for review. Pushes that keep the same version release nothing.
 
 ## Chrome Web Store setup
 

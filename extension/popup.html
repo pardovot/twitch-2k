@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Twitch 2K</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="icons/32.png" alt="" width="20" height="20" />
+      <h1>Twitch 2K</h1>
+    </header>
+
+    <section id="status" class="status" data-state="idle">
+      <strong id="status-title">No stream loaded</strong>
+      <p id="status-detail">Open a Twitch stream in this tab to see its status.</p>
+    </section>
+
+    <form id="settings">
+      <label for="worker-url">Worker URL</label>
+      <input id="worker-url" type="url" placeholder="https://twitch-2k-token.you.workers.dev" required />
+      <div class="actions">
+        <button type="submit">Save</button>
+        <button type="button" id="test" class="secondary">Test</button>
+      </div>
+      <p id="message" role="status"></p>
+    </form>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

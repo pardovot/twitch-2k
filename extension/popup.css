@@ -1,0 +1,107 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #18181b;
+  --muted: #6b7280;
+  --border: #e4e4e7;
+  --accent: #9147ff;
+  --ok: #16a34a;
+  --warn: #d97706;
+  --error: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18181b;
+    --fg: #efeff1;
+    --muted: #adadb8;
+    --border: #3f3f46;
+  }
+}
+
+body {
+  width: 300px;
+  margin: 0;
+  padding: 14px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.4 system-ui, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.status {
+  padding: 10px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--muted);
+  border-radius: 6px;
+}
+
+.status[data-state="unlocked"] { border-left-color: var(--ok); }
+.status[data-state="login"],
+.status[data-state="geo"] { border-left-color: var(--warn); }
+.status[data-state="failed"] { border-left-color: var(--error); }
+
+.status p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+button {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+#message {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+}
+
+#message[data-kind="ok"] { color: var(--ok); }
+#message[data-kind="error"] { color: var(--error); }
+#message[data-kind="pending"] { color: var(--muted); }

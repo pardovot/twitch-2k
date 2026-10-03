@@ -56,7 +56,13 @@ npm test
 
 Tests use Node's built-in test runner (Node 22+) and need no dependencies.
 
-`npm run package` zips the committed `extension` folder into `twitch-2k.zip`. Releases are one click in the Actions tab and can submit to the Chrome Web Store, see [store/releasing.md](store/releasing.md). Listing text and reviewer notes are in [store/listing.md](store/listing.md).
+`npm run package` zips the committed `extension` folder into `twitch-2k.zip`.
+
+## Releasing
+
+In the Actions tab, run the **CI** workflow on `master` and pick `patch`, `minor` or `major`. It bumps the version, tags it, creates a GitHub release with the zip, and submits the zip to the Chrome Web Store. Pushes never release. A push that changes `extension/` after the last release shows a warning as a reminder.
+
+Store publishing needs the repository variables `CWS_EXTENSION_ID` and `CWS_PUBLISHER_ID`, and the secret `CWS_SERVICE_ACCOUNT_KEY` in the `chrome-web-store` environment: a JSON key for a Google service account added to the Chrome Web Store dashboard. Without them the publish step is skipped.
 
 ## Privacy
 

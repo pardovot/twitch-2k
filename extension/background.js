@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
   const { icon, title } = STATES[status.state];
   Promise.all([
     chrome.action.setIcon({ tabId, path: statusIconPaths(icon) }),
-    chrome.action.setTitle({ tabId, title: `Twitch 2K: ${title}` }),
+    chrome.action.setTitle({ tabId, title: `${chrome.runtime.getManifest().name}: ${title}` }),
     chrome.storage.session.set({ [tabKey(tabId)]: status }),
   ]).catch(logError);
 });

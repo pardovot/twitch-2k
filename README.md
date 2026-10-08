@@ -1,4 +1,4 @@
-# Twitch 2K
+# 1440p for Twitch
 
 Chrome extension that unlocks 1440p ("2K") Twitch streams in countries where Twitch restricts them.
 
